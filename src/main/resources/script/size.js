@@ -7,12 +7,12 @@ var setRadius = function(newRadius){
 	context.lineWidth = radius*2;
 
 	radSpan.innerHTML = radius;
-}
+};
 
-var minRad = 0.5,
-	maxRad = 100,
+var minRad = 1,
+	maxRad = 60,
 	defauldRad = 5,
-	interval = 5,
+	interval = 1,
 	radSpan = document.getElementById('radval'),
 	decRad = document.getElementById('decrad'),
 	incRad = document.getElementById('incrad');

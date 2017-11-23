@@ -2,19 +2,19 @@ import org.eclipse.jetty.util.ConcurrentArrayQueue;
 import org.eclipse.jetty.websocket.api.Session;
 import spark.Spark;
 
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 import static spark.Spark.init;
 import static spark.Spark.port;
 import static spark.Spark.webSocket;
 
 public class DrawSpace {
 
-    static volatile ConcurrentArrayQueue<String> broadcastQueue = new ConcurrentArrayQueue<>();
-    static volatile ConcurrentArrayQueue<Session> sessions = new ConcurrentArrayQueue<>();
+    private static volatile ConcurrentArrayQueue<String> broadcastQueue = new ConcurrentArrayQueue<>();
+    private static volatile ConcurrentHashMap<Session, UUID> sessions = new ConcurrentHashMap<Session, UUID>();
 
     public static void main(String[] args) {
-
-        Thread thread = new Thread(new Broadcaster());
-        thread.start();
 
         port(8000);
 
@@ -27,9 +27,25 @@ public class DrawSpace {
         webSocket("/communication", ClientHandler.class);
         init();
 
+        new DrawSpace().run();
+
     }
 
-//    static class Packet{
+    private void run(){
+        Thread thread = new Thread(new Broadcaster());
+        thread.start();
+    }
+
+    static ConcurrentArrayQueue<String> getBroadcastQueue() {
+        return broadcastQueue;
+    }
+
+    static ConcurrentHashMap<Session, UUID> getSessions() {
+        return sessions;
+    }
+
+
+    //    static class Packet{
 //        int x,y,r;
 //        String color;
 //        public Packet(int x, int y, int r, String color){
